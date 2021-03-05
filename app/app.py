@@ -108,10 +108,10 @@ def get_ray_24_hour_volume():
 
 
 @app.get("/coin/price", response_class=PlainTextResponse)
-def get_coin_price(coin_name: str):
+def get_coin_price(coins: str):
     re_dict = {}
     try:
-        coin_name = json.loads(coin_name)
+        coin_name = coins.split(',')
         re_dict = {}
         for item in coin_name:
             item_coin_name = f'{item}'.upper()
