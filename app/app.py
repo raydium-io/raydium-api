@@ -1,4 +1,6 @@
 import requests
+import json
+from redis import Redis
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 
@@ -19,6 +21,26 @@ addresses = [
     "CvcqJtGdS9C1jKKFzgCi5p8qsnR5BZCohWvYMBJXcnJ8",
     "5fHS778vozoDDYzzJz2xYG39whTzGGW6bF71GVxRyMXi",
 ]
+
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+
+redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
+
+
+def get_redis_data(key):
+    global redis
+    get_data_index = 0
+    get_data_flag = True
+    return_data = ''
+    while get_data_index < 2 and get_data_flag:
+        try:
+            return_data = redis.get(key)
+            get_data_flag = False
+        except:
+            redis = redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
+            get_data_index += 1
+    return return_data if return_data else ''
 
 
 def get_ray_supply():
@@ -68,3 +90,31 @@ def circulating():
         circulating -= balance
 
     return str(circulating / 1e6)
+
+
+@app.get("/ray/24_hour_volume", response_class=PlainTextResponse)
+def get_ray_24_hour_volume():
+    return str(get_redis_data('size'))
+
+
+@app.get("/coin/price", response_class=PlainTextResponse)
+def get_coin_price(coin_name: str):
+    re_dict = {}
+    try:
+        coin_name = json.loads(coin_name)
+        re_dict = {}
+        for item in coin_name:
+            item_coin_name = item.upper()
+            item_price = get_redis_data(f'coin_price_{item_coin_name}')
+            item_price_value = 0
+            try:
+                if item_price == '' and item_coin_name in ['USDT', 'USDC']:
+                    item_price_value = 1
+                else:
+                    item_price_value = json.loads(item_price)['value']
+            except:
+                pass
+            re_dict[item_coin_name] = item_price_value
+    except:
+        pass
+    return json.dumps(re_dict)
