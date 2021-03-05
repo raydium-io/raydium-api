@@ -3,8 +3,18 @@ import json
 from redis import Redis
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # endpoint = "https://api.mainnet-beta.solana.com"
 endpoint = "https://solana-api.projectserum.com"
