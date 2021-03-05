@@ -104,7 +104,7 @@ def get_coin_price(coin_name: str):
         coin_name = json.loads(coin_name)
         re_dict = {}
         for item in coin_name:
-            item_coin_name = item.upper()
+            item_coin_name = f'{item}'.upper()
             item_price = get_redis_data(f'coin_price_{item_coin_name}')
             item_price_value = 0
             try:
