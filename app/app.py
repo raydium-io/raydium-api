@@ -96,7 +96,7 @@ def circulating():
 
 @app.get("/ray/24_hour_volume", response_class=PlainTextResponse)
 def get_ray_24_hour_volume():
-    return str(get_redis_data('size'))
+    return json.dumps({'value': get_redis_data('size')})
 
 
 @app.get("/coin/price", response_class=PlainTextResponse)
