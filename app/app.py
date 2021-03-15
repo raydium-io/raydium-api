@@ -124,3 +124,12 @@ def get_coin_price(coins: str):
     except Exception as e:
         pass
     return json.dumps(re_dict)
+
+
+@app.get("/pools", response_class=PlainTextResponse)
+def get_pools():
+    try:
+        c = get_redis_data('tvl_and_apr').decode('utf-8')
+    except:
+        c = []
+    return c
