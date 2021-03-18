@@ -139,7 +139,7 @@ def get_pools():
 @app.get("/tvl", response_class=PlainTextResponse)
 def get_tvl():
     try:
-        c = get_redis_data('tvl').decode('utf-8')
+        c = get_redis_data('tvl')
     except:
         c = 0
     return c
