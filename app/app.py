@@ -133,3 +133,13 @@ def get_pools():
     except:
         c = []
     return c
+
+
+
+@app.get("/tvl", response_class=PlainTextResponse)
+def get_tvl():
+    try:
+        c = get_redis_data('tvl').decode('utf-8')
+    except:
+        c = 0
+    return c
