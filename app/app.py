@@ -114,7 +114,7 @@ def get_coin_price(coins: str):
             item_price = get_redis_data(f'coin_price_{item_coin_name}')
             item_price_value = 0
             try:
-                if item_price == '' and item_coin_name in ['USDT', 'USDC', 'USD']:
+                if item_price == '' and item_coin_name in ['USDT', 'USDC', 'USD', 'WUSDT', 'WUSDC', 'WUSD']:
                     item_price_value = 1
                 else:
                     item_price_value = json.loads(item_price)['value']
