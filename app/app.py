@@ -128,18 +128,18 @@ def get_coin_price(coins: str):
 
 @app.get("/pools", response_class=PlainTextResponse)
 def get_pools():
-    try:
-        c = get_redis_data('tvl_and_apr').decode('utf-8')
-    except:
-        c = []
+    c = get_redis_data('tvl_and_apr').decode('utf-8')
     return c
 
 
 
 @app.get("/tvl", response_class=PlainTextResponse)
 def get_tvl():
-    try:
-        c = get_redis_data('tvl')
-    except:
-        c = 0
+    c = get_redis_data('tvl')
+    return c
+
+
+@app.get("/pairs", response_class=PlainTextResponse)
+def get_pairs():
+    c = get_redis_data('fills_data')
     return c
