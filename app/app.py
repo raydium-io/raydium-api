@@ -25,7 +25,7 @@ addresses = [
     "5fHS778vozoDDYzzJz2xYG39whTzGGW6bF71GVxRyMXi",
 ]
 
-REDIS_HOST = '192.168.23.133'
+REDIS_HOST = '127.0.0.1'
 REDIS_PORT = 6379
 
 redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
