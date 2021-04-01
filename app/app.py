@@ -25,7 +25,7 @@ addresses = [
     "5fHS778vozoDDYzzJz2xYG39whTzGGW6bF71GVxRyMXi",
 ]
 
-REDIS_HOST = '127.0.0.1'
+REDIS_HOST = '192.168.23.133'
 REDIS_PORT = 6379
 
 redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
@@ -148,10 +148,13 @@ def get_pairs():
 
 @app.get("/info", response_class=PlainTextResponse)
 def get_info(response: Response):
+    tvl = 0
+    volume24h = 0
     try:
-        tvl = get_redis_data('tvl')
-        volume24h = get_redis_data('size').decode('utf-8')
-    except:
+        tvl = round(float(get_redis_data('tvl')), 2)
+        volume24h = round(float(get_redis_data('size').decode('utf-8')), 2)
+    except Exception as e:
+        print(e.args, tvl, volume24h)
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         tvl = 0
         volume24h = 0
