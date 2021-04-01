@@ -1,9 +1,10 @@
-import requests
 import json
-from redis import Redis
-from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
+
+import requests
+from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse
+from redis import Redis
 
 app = FastAPI()
 
@@ -143,3 +144,18 @@ def get_tvl():
 def get_pairs():
     c = get_redis_data('fills_data')
     return c
+
+
+@app.get("/info", response_class=PlainTextResponse)
+def get_info(response: Response):
+    try:
+        tvl = get_redis_data('tvl')
+        volume24h = get_redis_data('size').decode('utf-8')
+    except:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        tvl = 0
+        volume24h = 0
+    return json.dumps({
+        'tvl': tvl,
+        'volume24h': volume24h
+    })
