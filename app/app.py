@@ -152,7 +152,7 @@ def get_info(response: Response):
         tvl = get_redis_data('tvl')
         volume24h = get_redis_data('size').decode('utf-8')
     except:
-        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         tvl = 0
         volume24h = 0
     return json.dumps({
