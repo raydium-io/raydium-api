@@ -162,3 +162,9 @@ def get_info(response: Response):
         'tvl': tvl,
         'volume24h': volume24h
     })
+
+
+@app.get("/amm_v4_crank", response_class=PlainTextResponse)
+def get_amm_and_sarket_info(response: Response):
+    c = get_redis_data('amm_info_zhang')
+    return c
