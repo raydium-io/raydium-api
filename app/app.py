@@ -25,7 +25,7 @@ addresses = [
     "5fHS778vozoDDYzzJz2xYG39whTzGGW6bF71GVxRyMXi",
 ]
 
-REDIS_HOST = '127.0.0.1'
+REDIS_HOST = '192.168.23.133'
 REDIS_PORT = 6379
 
 redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
@@ -165,6 +165,6 @@ def get_info(response: Response):
 
 
 @app.get("/amm_v4_crank", response_class=PlainTextResponse)
-def get_amm_and_sarket_info(response: Response):
-    c = get_redis_data('amm_info_zhang')
-    return c
+def get_amm_and_sarket_info(page: int):
+    c = json.loads(get_redis_data('amm_info_zhang'))
+    return json.dumps(c[10 * (page - 1): 10 * page])
