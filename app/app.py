@@ -3,7 +3,7 @@ import json
 import requests
 from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from redis import Redis
 
 app = FastAPI()
@@ -41,7 +41,7 @@ def get_redis_data(key):
             return_data = redis.get(key)
             get_data_flag = False
         except:
-            redis = redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
+            redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
             get_data_index += 1
     return return_data if return_data else ''
 
@@ -97,14 +97,11 @@ def circulating():
 
 @app.get("/ray/24_hour_volume", response_class=PlainTextResponse)
 def get_ray_24_hour_volume():
-    try:
-        c = get_redis_data('size').decode('utf-8')
-    except:
-        c = ''
+    c = get_redis_data('size').decode('utf-8')
     return c
 
 
-@app.get("/coin/price", response_class=PlainTextResponse)
+@app.get("/coin/price", response_class=JSONResponse)
 def get_coin_price(coins: str):
     re_dict = {}
     try:
@@ -124,12 +121,12 @@ def get_coin_price(coins: str):
             re_dict[item_coin_name] = item_price_value
     except Exception as e:
         pass
-    return json.dumps(re_dict)
+    return re_dict
 
 
-@app.get("/pools", response_class=PlainTextResponse)
+@app.get("/pools", response_class=JSONResponse)
 def get_pools():
-    c = get_redis_data('tvl_and_apr').decode('utf-8')
+    c = json.loads(get_redis_data('tvl_and_apr'))
     return c
 
 
@@ -139,14 +136,13 @@ def get_tvl():
     c = get_redis_data('tvl')
     return c
 
-
-@app.get("/pairs", response_class=PlainTextResponse)
+@app.get("/pairs", response_class=JSONResponse)
 def get_pairs():
-    c = get_redis_data('fills_data')
+    c = json.loads(get_redis_data('fills_data'))
     return c
 
 
-@app.get("/info", response_class=PlainTextResponse)
+@app.get("/info", response_class=JSONResponse)
 def get_info(response: Response):
     tvl = 0
     volume24h = 0
@@ -158,15 +154,15 @@ def get_info(response: Response):
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         tvl = 0
         volume24h = 0
-    return json.dumps({
+    return {
         'tvl': tvl,
         'volume24h': volume24h
-    })
+    }
 
 
-@app.get("/amm_v4_crank", response_class=PlainTextResponse)
+@app.get("/amm_v4_crank", response_class=JSONResponse)
 def get_amm_and_sarket_info(page: int, self: bool = False):
     c = json.loads(get_redis_data('amm_info_zhang'))
     if self:
         c = [item for item in c if item['self'] == 'true']
-    return json.dumps(c[10 * (page - 1): 10 * page])
+    return c[10 * (page - 1): 10 * page]
