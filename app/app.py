@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from redis import Redis
 
+from setting import *
+
 app = FastAPI()
 
 
@@ -25,10 +27,7 @@ addresses = [
     "5fHS778vozoDDYzzJz2xYG39whTzGGW6bF71GVxRyMXi",
 ]
 
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = 6379
-
-redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
+redis = Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASS)
 
 
 def get_redis_data(key):
@@ -41,7 +40,7 @@ def get_redis_data(key):
             return_data = redis.get(key)
             get_data_flag = False
         except:
-            redis = Redis(host=REDIS_HOST, port=REDIS_PORT)
+            redis = Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASS)
             get_data_index += 1
     return return_data if return_data else ''
 
