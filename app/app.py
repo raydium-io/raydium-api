@@ -101,23 +101,26 @@ def get_ray_24_hour_volume():
 
 
 @app.get("/coin/price", response_class=JSONResponse)
-def get_coin_price(coins: str):
+def get_coin_price(coins: str = ''):
     re_dict = {}
     try:
-        coin_name = coins.split(',')
-        re_dict = {}
-        for item in coin_name:
-            item_coin_name = f'{item}'.upper()
-            item_price = get_redis_data(f'coin_price_{item_coin_name}')
-            item_price_value = 0
-            try:
-                if item_price == '' and item_coin_name in ['USDT', 'USDC', 'USD', 'WUSDT', 'WUSDC', 'WUSD']:
-                    item_price_value = 1
-                else:
-                    item_price_value = json.loads(item_price)['value']
-            except:
-                pass
-            re_dict[item_coin_name] = item_price_value
+        if coins == '' or coins == 'SOL,WSOL,BTC,ETH,USDT,WUSDT,USDC,WUSDC,YFI,LINK,XRP,SUSHI,ALEPH,SXP,HGET,CREAM,UBXT,HNT,FRONT,AKRO,HXRO,UNI,SRM,FTT,MSRM,TOMO,KARMA,LUA,MATH,KEEP,SWAG,FIDA,KIN,MAPS,OXY,RAY,COPE,STEP,MEDIA':
+            re_dict = json.loads(get_redis_data(f'coin_price:ray_default'))
+        else:
+            coin_name = coins.split(',')
+            re_dict = {}
+            for item in coin_name:
+                item_coin_name = f'{item}'.upper()
+                item_price = get_redis_data(f'coin_price:{item_coin_name}')
+                item_price_value = 0
+                try:
+                    if item_price == '' and item_coin_name in ['USDT', 'USDC', 'USD', 'WUSDT', 'WUSDC', 'WUSD']:
+                        item_price_value = 1
+                    else:
+                        item_price_value = json.loads(item_price)['value']
+                except:
+                    pass
+                re_dict[item_coin_name] = item_price_value
     except Exception as e:
         pass
     return re_dict
@@ -129,11 +132,11 @@ def get_pools():
     return c
 
 
-
 @app.get("/tvl", response_class=PlainTextResponse)
 def get_tvl():
     c = get_redis_data('tvl')
     return c
+
 
 @app.get("/pairs", response_class=JSONResponse)
 def get_pairs():
@@ -160,8 +163,8 @@ def get_info(response: Response):
 
 
 @app.get("/amm_v4_crank", response_class=JSONResponse)
-def get_amm_and_sarket_info(page: int, self: bool = False):
-    c = json.loads(get_redis_data('amm_info_zhang'))
+def get_amm_v4_crank(page: int, self: bool = False):
+    c = json.loads(get_redis_data('amm_v4_crank'))
     if self:
         c = [item for item in c if item['self'] == 'true']
     return c[10 * (page - 1): 10 * page]
