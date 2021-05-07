@@ -1,4 +1,5 @@
 import json
+from distutils.version import StrictVersion
 
 import requests
 from fastapi import FastAPI, Response, status
@@ -152,7 +153,6 @@ def get_info(response: Response):
         tvl = round(float(get_redis_data('tvl')), 2)
         volume24h = round(float(get_redis_data('size').decode('utf-8')), 2)
     except Exception as e:
-        print(e.args, tvl, volume24h)
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         tvl = 0
         volume24h = 0
@@ -168,3 +168,27 @@ def get_amm_v4_crank(page: int, self: bool = False):
     if self:
         c = [item for item in c if item['self'] == 'true']
     return c[10 * (page - 1): 10 * page]
+
+
+@app.get("/config", response_class=JSONResponse)
+def get_config(v: str, response: Response):
+    try:
+        rpc_list = json.loads(get_redis_data('config_rpc_list'))
+        success = StrictVersion(get_redis_data('config_version').decode('utf-8')) <= StrictVersion(v)
+    except json.decoder.JSONDecodeError as e:
+        rpc_list = []
+        success = False
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    except ValueError as e:
+        rpc_list = []
+        success = False
+        response.status_code = status.HTTP_400_BAD_REQUEST
+    except Exception as e:
+        rpc_list = []
+        success = False
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+
+    return {
+        'rpcs': rpc_list,
+        'success': success,
+    }
