@@ -162,14 +162,6 @@ def get_info(response: Response):
     }
 
 
-@app.get("/amm_v4_crank", response_class=JSONResponse)
-def get_amm_v4_crank(page: int, self: bool = False):
-    c = json.loads(get_redis_data('amm_v4_crank'))
-    if self:
-        c = [item for item in c if item['self'] == 'true']
-    return c[10 * (page - 1): 10 * page]
-
-
 @app.get("/config", response_class=JSONResponse)
 def get_config(v: str, response: Response):
     try:
