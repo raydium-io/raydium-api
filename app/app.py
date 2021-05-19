@@ -166,6 +166,7 @@ def get_info(response: Response):
 def get_config(v: str, response: Response):
     try:
         rpc_list = json.loads(get_redis_data('config_rpc_list'))
+        strategy = json.loads(get_redis_data('strategy'))
         success = StrictVersion(get_redis_data('config_version').decode('utf-8')) <= StrictVersion(v)
     except json.decoder.JSONDecodeError as e:
         rpc_list = []
@@ -183,4 +184,5 @@ def get_config(v: str, response: Response):
     return {
         'rpcs': rpc_list,
         'success': success,
+        'strategy': strategy
     }
