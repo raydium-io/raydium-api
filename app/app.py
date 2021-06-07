@@ -99,7 +99,7 @@ def circulating():
 def get_coin_price(coins: str = ''):
     re_dict = {}
     try:
-        if coins == '' or coins == 'SOL,WSOL,BTC,ETH,USDT,WUSDT,USDC,WUSDC,YFI,LINK,XRP,SUSHI,ALEPH,SXP,HGET,CREAM,UBXT,HNT,FRONT,AKRO,HXRO,UNI,SRM,FTT,MSRM,TOMO,KARMA,LUA,MATH,KEEP,SWAG,FIDA,KIN,MAPS,OXY,RAY,COPE,STEP,MEDIA':
+        if coins == '':
             re_dict = json.loads(get_redis_data(f'coin_price:ray_default'))
         else:
             coin_name = coins.split(',')
