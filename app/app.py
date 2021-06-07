@@ -95,12 +95,6 @@ def circulating():
     return str(circulating / 1e6)
 
 
-@app.get("/ray/24_hour_volume", response_class=PlainTextResponse)
-def get_ray_24_hour_volume():
-    c = get_redis_data('size').decode('utf-8')
-    return c
-
-
 @app.get("/coin/price", response_class=JSONResponse)
 def get_coin_price(coins: str = ''):
     re_dict = {}
@@ -129,37 +123,20 @@ def get_coin_price(coins: str = ''):
 
 @app.get("/pools", response_class=JSONResponse)
 def get_pools():
-    c = json.loads(get_redis_data('tvl_and_apr'))
-    return c
-
-
-@app.get("/tvl", response_class=PlainTextResponse)
-def get_tvl():
-    c = get_redis_data('tvl')
+    c = json.loads(get_redis_data('pools'))
     return c
 
 
 @app.get("/pairs", response_class=JSONResponse)
 def get_pairs():
-    c = json.loads(get_redis_data('fills_data'))
+    c = json.loads(get_redis_data('pairs'))
     return c
 
 
 @app.get("/info", response_class=JSONResponse)
-def get_info(response: Response):
-    tvl = 0
-    volume24h = 0
-    try:
-        tvl = round(float(get_redis_data('tvl')), 2)
-        volume24h = round(float(get_redis_data('size').decode('utf-8')), 2)
-    except Exception as e:
-        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-        tvl = 0
-        volume24h = 0
-    return {
-        'tvl': tvl,
-        'volume24h': volume24h
-    }
+def get_info():
+    c = json.loads(get_redis_data('info'))
+    return c
 
 
 @app.get("/config", response_class=JSONResponse)
