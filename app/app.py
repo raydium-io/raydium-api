@@ -163,3 +163,17 @@ def get_config(v: str, response: Response):
         'success': success,
         'strategy': strategy
     }
+
+
+@app.get("/verifytg", response_class=JSONResponse)
+def get_verifytg(s: str):
+    ver_list = get_redis_data('verifytg')
+    if (ver_list and len([item for item in json.loads(ver_list) if item == s ]) > 0):
+        return {
+            'success': True,
+            'msg': "Verified core team member"
+        }
+    return {
+        'success': False,
+        'msg': "Imposter"
+    }
