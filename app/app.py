@@ -175,5 +175,5 @@ def get_verifytg(s: str):
         }
     return {
         'success': False,
-        'msg': "Imposter"
+        'msg': "Unverified username or imposter"
     }
