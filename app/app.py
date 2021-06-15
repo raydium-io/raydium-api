@@ -171,7 +171,7 @@ def get_verifytg(s: str):
     if (ver_list and len([item for item in json.loads(ver_list) if item.lower() == s.lower() ]) > 0):
         return {
             'success': True,
-            'msg': "Verified core team member"
+            'msg': "Verified Raydium core team member"
         }
     return {
         'success': False,
