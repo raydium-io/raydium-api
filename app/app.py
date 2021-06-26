@@ -168,11 +168,18 @@ def get_config(v: str, response: Response):
 @app.get("/verifytg", response_class=JSONResponse)
 def get_verifytg(s: str):
     ver_list = get_redis_data('verifytg')
-    if (ver_list and len([item for item in json.loads(ver_list) if item.lower() == s.lower() ]) > 0):
+    if (ver_list and len([item for item in json.loads(ver_list) if item.lower() == s.lower()]) > 0):
         return {
             'success': True,
             'msg': "Verified Raydium core team member"
         }
+    ver_list = get_redis_data('verifytg_community')
+    if (ver_list and len([item for item in json.loads(ver_list) if item.lower() == s.lower()]) > 0):
+        return {
+            'success': True,
+            'msg': "Verified Raydium community manager"
+        }
+
     return {
         'success': False,
         'msg': "Unverified username or imposter"
