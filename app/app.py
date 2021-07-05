@@ -167,6 +167,7 @@ def get_config(v: str, response: Response):
 
 @app.get("/verifytg", response_class=JSONResponse)
 def get_verifytg(s: str):
+    s = s.strip()
     ver_list = get_redis_data('verifytg')
     if (ver_list and len([item for item in json.loads(ver_list) if item.lower() == s.lower()]) > 0):
         return {
